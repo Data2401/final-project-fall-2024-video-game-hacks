@@ -24,10 +24,13 @@ Due to the nature of these attacks, many of the examples are going to have unkno
 
 # Questions:
 1. What industries are affected the most?
-2. Does a company's revenue or size have any correlation with the ransom amount?
-3. Average ransom amount, average for paid ransoms?
+2. Where are these attacks coming from
+3. Does a company's revenue or size have any correlation with the ransom amount?
 4. Which regions are being attacked the most.
-5. Is ransomware that we know about trending down or gaining popularity? Is this changed by the current price of bitcoin?
+5. Which hacker groups are attacking which region most frequently, Europe, America, Asia/Oceania.
+6. Average ransom amount vs average amount actually paid.
+7. Is ransomware that we know about trending down or gaining popularity? Is this changed by the current price of bitcoin?
+
 
 # Unfiltered Data
 ```{r}
@@ -41,3 +44,84 @@ glimpse(RA)
 - **revenue** - revenue of the company in millions USD
 - **cost/ransom** - cost of the ransom and explaination in millions 
 - **Ransomware** - the individual or group taking credit for the attack
+
+# What industries are affected the most?
+
+
+
+
+
+
+
+
+
+@ Where are these attacks coming from
+
+
+
+
+
+
+
+
+
+
+# Does a company's revenue or size have any correlation with the ransom amount?
+
+
+
+
+
+
+
+
+
+
+
+# Which regions are being attacked the most.
+
+
+
+
+
+
+
+
+
+
+
+# Which hacker groups are attacking which region most frequently, Europe, America, Asia/Oceania.
+
+
+
+
+
+
+
+
+
+
+
+# Average ransom amount vs average amount actually paid.
+
+
+
+
+
+
+
+
+
+
+
+# Is ransomware that we know about trending down or gaining popularity? Is this changed by the current price of bitcoin?
+
+
+
+
+
+
+
+
+
+
