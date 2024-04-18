@@ -376,15 +376,15 @@ RA &lt;- read.csv(&quot;Ransomware Attacks - Ransomware Attacks.csv&quot;) #Rans
 </div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>Ransomware refers to a malware that locks a user out of their system
-and can hold their data hostage. The expectation is that the victim will
-pay a ransom for the attacker to release the data back to the user or
-withold it from the public. With the rise of cryptocurrency, these
-attacks have become far more common than the past due to the unregulated
-nature of coins so criminals can recieve a ransom and hide their tracks.
-Our goal is to analyze some of these attacks and find out some answers
-about both the attacks, as well as common victims and outcomes of these
-attacks.</p>
+<p>Ransomware refers to a type of malware that locks a user out of their
+system and can hold their data hostage. The expectation is that the
+victim will pay a ransom for the attacker to release the data back to
+the user or withhold it from the public. With the rise of
+cryptocurrency, these attacks have become far more common than the past
+due to the unregulated nature of coins so criminals can receive a ransom
+and hide their tracks. Our goal is to analyze some of these attacks and
+find out some answers about both the attacks, as well as common victims
+and outcomes of these attacks.</p>
 </div>
 <div id="explaining-the-data" class="section level1">
 <h1>Explaining the Data</h1>
@@ -397,13 +397,20 @@ market.</p>
 </div>
 <div id="questions" class="section level1">
 <h1>Questions:</h1>
-<p>What industries are affected the most? Does a company’s revenue or
-size have any correlation with the ransom amount?</p>
+<ol style="list-style-type: decimal">
+<li>What industries are affected the most?</li>
+<li>Does a company’s revenue or size have any correlation with the
+ransom amount?</li>
+<li>Average ransom amount, average for paid ransoms?</li>
+<li>Which regions are being attacked the most.</li>
+<li>Is ransomware that we know about trending down or gaining
+popularity? Is this changed by the current price of bitcoin?</li>
+</ol>
 </div>
 <div id="unfiltered-data" class="section level1">
 <h1>Unfiltered Data</h1>
 <pre class="r"><code>glimpse(RA)</code></pre>
-<pre><code>## Rows: 358
+<pre><code>## Rows: 359
 ## Columns: 29
 ## $ Target                               &lt;chr&gt; &quot;Kaseya&quot;, &quot;Salvation Army&quot;, &quot;Grup…
 ## $ AKA                                  &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;Mountain Reg…

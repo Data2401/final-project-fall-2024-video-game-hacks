@@ -20,11 +20,14 @@ RA <- read.csv("Ransomware Attacks - Ransomware Attacks.csv") #Ransomware Attack
 Ransomware refers to a type of malware that locks a user out of their system and can hold their data hostage. The expectation is that the victim will pay a ransom for the attacker to release the data back to the user or withhold it from the public. With the rise of cryptocurrency, these attacks have become far more common than the past due to the unregulated nature of coins so criminals can receive a ransom and hide their tracks. Our goal is to analyze some of these attacks and find out some answers about both the attacks, as well as common victims and outcomes of these attacks.
 
 # Explaining the Data
-Due to the nature of these attacks, many of the examples are going to have unknown data such as ransom amount, this is because companies do not like making it public that their security has been breached unless necessary or the attacker has made their intentions public, or worst case scenario, leaked the data to the public or sold it on the black market. 
+Due to the nature of these attacks, many of the examples are going to have unknown data such as ransom amount, this is because companies do not like making it public that their security has been breached unless necessary or the attacker has made their intentions public, or worst case scenario, leaked the data to the public or sold it on the black market. This could mean that our data does not apply to the whole situation of ransomware attacks, but we can make conclusions about the data we do know.
 
 # Questions:
-What industries are affected the most?
-Does a company's revenue or size have any correlation with the ransom amount?
+1. What industries are affected the most?
+2. Does a company's revenue or size have any correlation with the ransom amount?
+3. Average ransom amount, average for paid ransoms?
+4. Which regions are being attacked the most.
+5. Is ransomware that we know about trending down or gaining popularity? Is this changed by the current price of bitcoin?
 
 # Unfiltered Data
 ```{r}
