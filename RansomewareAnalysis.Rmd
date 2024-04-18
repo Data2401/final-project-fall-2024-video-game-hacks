@@ -22,7 +22,7 @@ Ransomware refers to a type of malware that locks a user out of their system and
 # Explaining the Data
 Due to the nature of these attacks, many of the examples are going to have unknown data such as ransom amount, this is because companies do not like making it public that their security has been breached unless necessary or the attacker has made their intentions public, or worst case scenario, leaked the data to the public or sold it on the black market. This could mean that our data does not apply to the whole situation of ransomware attacks, but we can make conclusions about the data we do know.
 
-# Questions:
+# Questions: Christian(1, 2, 4, 5) Zack(3, 6, 7)
 1. What industries are affected the most?
 2. Where are these attacks coming from
 3. Does a company's revenue or size have any correlation with the ransom amount?
