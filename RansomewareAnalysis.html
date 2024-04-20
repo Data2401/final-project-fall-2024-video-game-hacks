@@ -363,7 +363,7 @@ display: none;
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-## ✔ ggplot2   3.5.0     ✔ tibble    3.2.1
+## ✔ ggplot2   3.4.4     ✔ tibble    3.2.1
 ## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
 ## ✔ purrr     1.0.2     
 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
@@ -481,6 +481,26 @@ Europe, America, Asia/Oceania.</h1>
 </div>
 <div id="average-ransom-amount-vs-average-amount-actually-paid." class="section level1">
 <h1>Average ransom amount vs average amount actually paid.</h1>
+<pre class="r"><code>avgRansomCost &lt;- RA %&gt;% summarise(requested = mean(ransom.cost, na.rm = T))
+avgRansomPaid &lt;- RA %&gt;% filter(ransom.paid == &quot;ransom paid&quot;) %&gt;%  summarise(paid = mean(ransom.cost, na.rm = T))
+avgRansomUnpaid &lt;- RA %&gt;% filter(ransom.paid == &quot;refused&quot;) %&gt;%  summarise(refused = mean(ransom.cost, na.rm = T))
+
+print(&quot;The average of all known ransom requests&quot;)</code></pre>
+<pre><code>## [1] &quot;The average of all known ransom requests&quot;</code></pre>
+<pre class="r"><code>print(avgRansomCost)</code></pre>
+<pre><code>##   requested
+## 1  32.68293</code></pre>
+<pre class="r"><code>print(&quot;The average of paid ransoms&quot;)</code></pre>
+<pre><code>## [1] &quot;The average of paid ransoms&quot;</code></pre>
+<pre class="r"><code>print(avgRansomPaid)</code></pre>
+<pre><code>##       paid
+## 1 2.709991</code></pre>
+<pre class="r"><code>print(&quot;The average of refused ransoms&quot;)</code></pre>
+<pre><code>## [1] &quot;The average of refused ransoms&quot;</code></pre>
+<pre class="r"><code>print(avgRansomUnpaid)</code></pre>
+<pre><code>##    refused
+## 1 17.70791</code></pre>
+<pre class="r"><code>#The paid average is significantly lower than the overall average and the refused average.</code></pre>
 </div>
 <div id="is-ransomware-that-we-know-about-trending-down-or-gaining-popularity-is-this-changed-by-the-current-price-of-bitcoin" class="section level1">
 <h1>Is ransomware that we know about trending down or gaining

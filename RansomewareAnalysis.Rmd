@@ -103,12 +103,21 @@ glimpse(RA)
 
 
 # Average ransom amount vs average amount actually paid.
+```{r}
 
+avgRansomCost <- RA %>% summarise(requested = mean(ransom.cost, na.rm = T))
+avgRansomPaid <- RA %>% filter(ransom.paid == "ransom paid") %>%  summarise(paid = mean(ransom.cost, na.rm = T))
+avgRansomUnpaid <- RA %>% filter(ransom.paid == "refused") %>%  summarise(refused = mean(ransom.cost, na.rm = T))
 
+print("The average of all known ransom requests")
+print(avgRansomCost)
+print("The average of paid ransoms")
+print(avgRansomPaid)
+print("The average of refused ransoms")
+print(avgRansomUnpaid)
 
-
-
-
+#The paid average is significantly lower than the overall average and the refused average.
+```
 
 
 
