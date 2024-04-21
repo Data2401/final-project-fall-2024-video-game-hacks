@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(dplyr)
 RA <- read.csv("Ransomware Attacks - Ransomware Attacks.csv") #Ransomware Attacks
+bitcoinHigh <- read.csv("bitcoinHighPrice.csv") #for bitcoin cost graph
 ```
 
 # Introduction
@@ -109,11 +110,11 @@ avgRansomCost <- RA %>% summarise(requested = mean(ransom.cost, na.rm = T))
 avgRansomPaid <- RA %>% filter(ransom.paid == "ransom paid") %>%  summarise(paid = mean(ransom.cost, na.rm = T))
 avgRansomUnpaid <- RA %>% filter(ransom.paid == "refused") %>%  summarise(refused = mean(ransom.cost, na.rm = T))
 
-print("The average of all known ransom requests")
+print("The average of all known ransom requests(in millions USD")
 print(avgRansomCost)
-print("The average of paid ransoms")
+print("The average of paid ransoms(in millions USD)")
 print(avgRansomPaid)
-print("The average of refused ransoms")
+print("The average of refused ransoms(in millionsUSD)")
 print(avgRansomUnpaid)
 
 #The paid average is significantly lower than the overall average and the refused average.
@@ -124,13 +125,11 @@ print(avgRansomUnpaid)
 
 
 # Is ransomware that we know about trending down or gaining popularity? Is this changed by the current price of bitcoin?
+```{r}
+yearlyAttacks <- RA %>% filter(YEAR != 2023) %>%  group_by(YEAR) %>% ggplot(aes(x = factor(YEAR))) + geom_bar()
+
+bitcoinCost <- bitcoinHigh %>% group_by(YEAR) %>% ggplot(aes(x = factor(YEAR), y = high)) + geom_line(color = "gold")
 
 
-
-
-
-
-
-
-
+```
 
