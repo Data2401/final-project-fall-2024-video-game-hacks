@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(dplyr)
+library(ggplot2)
 RA <- read.csv("Ransomware Attacks - Ransomware Attacks.csv") #Ransomware Attacks
 bitcoinHigh <- read.csv("bitcoinHighPrice.csv") #for bitcoin cost graph
 ```
@@ -69,6 +70,7 @@ glimpse(RA)
 
 # Does a company's revenue or size have any correlation with the ransom amount?
 
+```{r}
 
 
 
@@ -77,6 +79,7 @@ glimpse(RA)
 
 
 
+```
 
 
 # Which regions are being attacked the most.
@@ -111,25 +114,36 @@ avgRansomPaid <- RA %>% filter(ransom.paid == "ransom paid") %>%  summarise(paid
 avgRansomUnpaid <- RA %>% filter(ransom.paid == "refused") %>%  summarise(refused = mean(ransom.cost, na.rm = T))
 
 print("The average of all known ransom requests(in millions USD")
-print(avgRansomCost)
+avgRansomCost
 print("The average of paid ransoms(in millions USD)")
-print(avgRansomPaid)
+avgRansomPaid
 print("The average of refused ransoms(in millionsUSD)")
-print(avgRansomUnpaid)
+avgRansomUnpaid
 
-#The paid average is significantly lower than the overall average and the refused average.
 ```
 
-
+The paid average is significantly lower than the overall average and the refused average.
 
 
 
 # Is ransomware that we know about trending down or gaining popularity? Is this changed by the current price of bitcoin?
 ```{r}
-yearlyAttacks <- RA %>% filter(YEAR != 2023) %>%  group_by(YEAR) %>% ggplot(aes(x = factor(YEAR))) + geom_bar()
 
-bitcoinCost <- bitcoinHigh %>% group_by(YEAR) %>% ggplot(aes(x = factor(YEAR), y = high)) + geom_line(color = "gold")
+combinedData <- merge(RA, bitcoinHigh, by = "YEAR")
 
+
+combinedPlot <- ggplot(combinedData, aes(x = factor(YEAR))) +
+  geom_bar(aes(y = ..count..), fill = "black") +  
+  geom_line(aes(y = high * .01, group = 1), color = "gold") +  
+  scale_y_continuous(
+    name = "Number of Attacks",
+    sec.axis = sec_axis(~.*100, name = "Bitcoin High Values"),
+    
+  )
+
+combinedPlot
 
 ```
+
+The trend of bitcoin and number of attacks actually does seem to be similar, especially when it dips in 2018 and goes back up in 2020
 
