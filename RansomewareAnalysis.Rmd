@@ -14,6 +14,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+#install.packages("patchwork") #run if patchwork not downloaded
+library(patchwork)
 RA <- read.csv("Ransomware Attacks - Ransomware Attacks.csv") #Ransomware Attacks
 bitcoinHigh <- read.csv("bitcoinHighPrice.csv") #for bitcoin cost graph
 ```
@@ -117,7 +119,7 @@ print("The average of all known ransom requests(in millions USD")
 avgRansomCost
 print("The average of paid ransoms(in millions USD)")
 avgRansomPaid
-print("The average of refused ransoms(in millionsUSD)")
+print("The average of refused ransoms(in millions USD)")
 avgRansomUnpaid
 
 ```
@@ -129,17 +131,36 @@ The paid average is significantly lower than the overall average and the refused
 # Is ransomware that we know about trending down or gaining popularity? Is this changed by the current price of bitcoin?
 ```{r}
 
-combinedData <- merge(RA, bitcoinHigh, by = "YEAR")
+yearlyAttacks <- RA %>% filter(YEAR != 2023) %>%  group_by(YEAR) %>% ggplot(aes(x = factor(YEAR))) + 
+  geom_bar(fill = "black") +
+  labs(
+    x = "Year" ,
+    y = "Number of Attacks"
+  )
 
+bitcoinCost <- bitcoinHigh %>% group_by(YEAR) %>% ggplot(aes(x = factor(YEAR), y = high, group = 1)) + 
+  geom_line(color = "gold") +
+  labs(
+    x = "Year" ,
+    y = "Bitcoin Peak(USD)"
+  )
+
+yearlyAttacks / bitcoinCost
+
+combinedData <- merge(RA, bitcoinHigh, by = "YEAR")
 
 combinedPlot <- ggplot(combinedData, aes(x = factor(YEAR))) +
   geom_bar(aes(y = ..count..), fill = "black") +  
-  geom_line(aes(y = high * .01, group = 1), color = "gold") +  
+  geom_line(aes(y = high * .001, group = 1), color = "gold") +  
   scale_y_continuous(
-    name = "Number of Attacks",
-    sec.axis = sec_axis(~.*100, name = "Bitcoin High Values"),
+    name = "Attacks",
+    sec.axis = sec_axis(~.*1000, name = "Bitcoin Peak(USD)"),
     
+  ) +
+  labs(
+    x = "Year"
   )
+
 
 combinedPlot
 
