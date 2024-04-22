@@ -74,15 +74,22 @@ glimpse(RA)
 
 ```{r}
 
+scatterPlot <- RA %>% ggplot(aes(x = revenue..USD.million, y = ransom.cost, color = sector, na.rm = T)) +
+  geom_point() +
+   labs(
+    x = "Revenue(Millions USD)" ,
+    y = "Ransom(Millions USD)"
+  ) +
+  scale_x_continuous(labels = scales::number_format(scale = 1e-3, suffix = "M"), limits = c(0,200)) +
+  scale_y_continuous(limits = c(0, 100))
 
 
-
-
-
+scatterPlot
 
 
 ```
 
+There does not seem to be any relation between the revenue of a company and the requested ransom amount, nor does it have any correlation with what sector the company is in.
 
 # Which regions are being attacked the most.
 
