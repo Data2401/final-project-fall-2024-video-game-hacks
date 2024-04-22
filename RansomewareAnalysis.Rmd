@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(dplyr)
+library(ggplot2)
 RA <- read.csv("Ransomware Attacks - Ransomware Attacks.csv") #Ransomware Attacks
 ```
 
@@ -46,8 +47,41 @@ glimpse(RA)
 - **Ransomware** - the individual or group taking credit for the attack
 
 # What industries are affected the most?
+```{r echo=FALSE}
+RA$AKA <- NULL
+RA$description <- NULL
+RA$organisation.size.1.5.10.25.100.300. <- NULL
+RA$data.note <- NULL
+RA$YEAR.code <- NULL
+RA$interesting.story..edited. <- NULL
+RA$interesting.story. <- NULL
+RA$stock.symbol <- NULL
+RA$interesting.story..long. <- NULL
+RA$revenue.as.of <- NULL
+RA$no.of.employees <- NULL
+RA$Data.Note <- NULL
+RA$Source.Name <- NULL
+RA$URL <- NULL
+RA$URL.2 <- NULL
+RA$URL.3 <- NULL
+RA$URL.4 <- NULL
+RA$URL.5 <- NULL
+RA$X.ID <- NULL
+```
+
+### All industries affected
+```{r plot-wider, fig.width=12, fig.height=13, echo=FALSE} 
+most_affected <- RA %>% group_by(sector) %>% summarise(n=n()) %>% arrange(desc(n), sector)
+
+ggplot(most_affected, aes(y=fct_rev(sector), x = n)) + geom_col() + scale_x_continuous() + labs(y=NULL, x = "Number of Attacks")
+```
 
 
+
+### Top 5 industries affected
+```{r}
+RA %>% group_by(sector) %>% summarise(n=n()) %>% arrange(desc(n)) %>% head(5) #the most affected sector.
+```
 
 
 
@@ -56,7 +90,39 @@ glimpse(RA)
 
 
 # Where are these attacks coming from
+```{r}
+RA_Hackers <- RA %>% group_by(Ransomware) %>% summarise(n=n())
 
+
+Temp_RA_ATT <- RA_Hackers$region <- c("N/A", "USA",	"Japan",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Iran",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Cuba",	"Russia",	"Russia",	"UK",	"Ukraine",	"USA",	"Turky",	"Russia",	"Russia",	"Ukraine",	"Ecuador",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"N/A",	"Russia",	"Russia",	"Netherlands",	"Iran",	"Russia",	"Russia",	"Russia",	"Russia",	"Spain",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"USA",	"Iran",	"South Africa",	"Russia",	"Russia",	"Russia",	"Russia",	"North Korea",	"Russia",	"Chinese",	"Russia",	"N/A")
+
+RA_loc_of_att <- merge(RA, RA_Hackers, by = c("Ransomware"), all.x = TRUE)
+
+RA_loc_of_att$n <- NULL
+RA_V.2 <- RA_loc_of_att[, c(2, 3, 8, 9, 10, 1, 11, 6, 7, 4, 5)]
+```
+
+```{r}
+RA_Attack_Map <- RA_V.2 %>% group_by(region) %>% summarise()
+
+mapdata. <- map_data("world")
+
+
+mapdata <- left_join(mapdata., RA_Hackers, by="region")
+mapdata1 <- mapdata %>% filter(!is.na(mapdata$Ransomware))
+map1 <- ggplot(mapdata1, aes(x= long, y = lat, group=group)) +
+  geom_polygon(aes(fill = region),fill = "firebrick4", color = "black") + 
+  borders(alpha = 0.1, fill = "dodgerblue") +
+  theme(panel.background = element_rect(color = "black", fill = "gray")) +
+  labs(title = "World Map ", subtitle = "This is a map of where Ransom attacks come from")
+map1
+
+```
+##Q2
+```{r}
+view(RA_Attack_Map)
+
+```
 
 
 
@@ -79,8 +145,10 @@ glimpse(RA)
 
 
 # Which regions are being attacked the most.
+```{r}
 
 
+```
 
 
 
@@ -91,7 +159,10 @@ glimpse(RA)
 
 
 # Which hacker groups are attacking which region most frequently, Europe, America, Asia/Oceania.
+```{r}
 
+
+```
 
 
 
