@@ -14,7 +14,15 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(dslabs) #Installed
+#<<<<<<< HEAD
+#=======
+#install.packages("patchwork") #run if patchwork not downloaded
+library(patchwork)
+
+#>>>>>>> eb922c317e58f6a713f58f0c22e0296e7311011c
 RA <- read.csv("Ransomware Attacks - Ransomware Attacks.csv") #Ransomware Attacks
+bitcoinHigh <- read.csv("bitcoinHighPrice.csv") #for bitcoin cost graph
 ```
 
 # Introduction
@@ -70,10 +78,10 @@ RA$X.ID <- NULL
 ```
 
 ### All industries affected
-```{r plot-wider, fig.width=12, fig.height=13, echo=FALSE} 
+```{r plot-wider, fig.width=12, fig.height=13} 
 most_affected <- RA %>% group_by(sector) %>% summarise(n=n()) %>% arrange(desc(n), sector)
-
-ggplot(most_affected, aes(y=fct_rev(sector), x = n)) + geom_col() + scale_x_continuous() + labs(y=NULL, x = "Number of Attacks")
+#view(most_affected)
+ggplot(most_affected, aes(y=fct_rev(sector), x = n)) + geom_col() + scale_x_continuous() + theme(panel.background = element_rect(color = "white", fill = "gray")) + labs(y=NULL, x = "Number of Attacks") + labs(title = "Industries Attacked", subtitle = "The number of attacks per industry")
 ```
 
 
@@ -134,15 +142,24 @@ view(RA_Attack_Map)
 
 # Does a company's revenue or size have any correlation with the ransom amount?
 
+```{r}
+
+scatterPlot <- RA %>% ggplot(aes(x = revenue..USD.million, y = ransom.cost, color = sector, na.rm = T)) +
+  geom_point() +
+   labs(
+    x = "Revenue(Hundred Millions USD)" ,
+    y = "Ransom(Millions USD)"
+  ) +
+  scale_x_continuous(labels = scales::number_format(scale = 1e-3), limits = c(0,200)) +
+  scale_y_continuous(limits = c(0, 100))
 
 
+scatterPlot
 
 
+```
 
-
-
-
-
+There does not seem to be any relation between the revenue of a company and the requested ransom amount, nor does it have any correlation with what sector the company is in.
 
 # Which regions are being attacked the most.
 ```{r}
@@ -174,25 +191,62 @@ view(RA_Attack_Map)
 
 
 # Average ransom amount vs average amount actually paid.
+```{r}
 
+avgRansomCost <- RA %>% summarise(requested = mean(ransom.cost, na.rm = T))
+avgRansomPaid <- RA %>% filter(ransom.paid == "ransom paid") %>%  summarise(paid = mean(ransom.cost, na.rm = T))
+avgRansomUnpaid <- RA %>% filter(ransom.paid == "refused") %>%  summarise(refused = mean(ransom.cost, na.rm = T))
 
+print("The average of all known ransom requests(in millions USD")
+avgRansomCost
+print("The average of paid ransoms(in millions USD)")
+avgRansomPaid
+print("The average of refused ransoms(in millions USD)")
+avgRansomUnpaid
 
+```
 
-
-
-
-
+The paid average is significantly lower than the overall average and the refused average.
 
 
 
 # Is ransomware that we know about trending down or gaining popularity? Is this changed by the current price of bitcoin?
+```{r}
+
+yearlyAttacks <- RA %>% filter(YEAR != 2023) %>%  group_by(YEAR) %>% ggplot(aes(x = factor(YEAR))) + 
+  geom_bar(fill = "black") +
+  labs(
+    x = "Year" ,
+    y = "Number of Attacks"
+  )
+
+bitcoinCost <- bitcoinHigh %>% group_by(YEAR) %>% ggplot(aes(x = factor(YEAR), y = high, group = 1)) + 
+  geom_line(color = "gold") +
+  labs(
+    x = "Year" ,
+    y = "Bitcoin Peak(USD)"
+  )
+
+yearlyAttacks / bitcoinCost
+
+combinedData <- merge(RA, bitcoinHigh, by = "YEAR")
+
+combinedPlot <- ggplot(combinedData, aes(x = factor(YEAR))) +
+  geom_bar(aes(y = ..count..), fill = "black") +  
+  geom_line(aes(y = high * .001, group = 1), color = "gold") +  
+  scale_y_continuous(
+    name = "Attacks",
+    sec.axis = sec_axis(~.*1000, name = "Bitcoin Peak(USD)"),
+    
+  ) +
+  labs(
+    x = "Year"
+  )
 
 
+combinedPlot
 
+```
 
-
-
-
-
-
+The trend of bitcoin and number of attacks actually does seem to be similar, especially when it dips in 2018 and goes back up in 2020
 
