@@ -81,15 +81,20 @@ RA$X.ID <- NULL
 ```{r plot-wider, fig.width=12, fig.height=13} 
 most_affected <- RA %>% group_by(sector) %>% summarise(n=n()) %>% arrange(desc(n), sector)
 #view(most_affected)
-ggplot(most_affected, aes(y=fct_rev(sector), x = n)) + geom_col() + scale_x_continuous() + theme(panel.background = element_rect(color = "white", fill = "gray")) + labs(y=NULL, x = "Number of Attacks") + labs(title = "Industries Attacked", subtitle = "The number of attacks per industry")
+ggplot(most_affected, aes(y=fct_rev(sector), x = n)) + geom_col() + scale_x_continuous() + theme(panel.background = element_rect(color = "white", fill = "gray")) + labs(y=NULL, x = "Number of Attacks") + labs(title = "Industries Affected By Ransome Attacks", subtitle = "Ransome Attacks From 2013-2023")
 ```
 
 
 
 ### Top 5 industries affected
 ```{r}
-RA %>% group_by(sector) %>% summarise(n=n()) %>% arrange(desc(n)) %>% head(5) #the most affected sector.
+Top_5_RA <- RA %>% group_by(sector) %>% summarise(n=n()) %>% arrange(desc(n)) %>% head(5)
+
+most_affected <- RA %>% group_by(sector) %>% summarise(n=n()) %>% arrange(desc(n), sector) %>% slice(1:5)
+#view(most_affected)
+ggplot(most_affected, aes(y=fct_rev(sector), x = n)) + geom_col() + scale_x_continuous() + theme(panel.background = element_rect(color = "white", fill = "gray")) + labs(y=NULL, x = "Number of Attacks") + labs(title = "Top 5 Industries Affected By Ransome Attacks", subtitle = "Ransome Attacks From 2013-2023")
 ```
+
 
 
 
@@ -98,7 +103,7 @@ RA %>% group_by(sector) %>% summarise(n=n()) %>% arrange(desc(n)) %>% head(5) #t
 
 
 # Where are these attacks coming from
-```{r}
+```{r, echo=FALSE} 
 RA_Hackers <- RA %>% group_by(Ransomware) %>% summarise(n=n())
 
 
@@ -110,8 +115,8 @@ RA_loc_of_att$n <- NULL
 RA_V.2 <- RA_loc_of_att[, c(2, 3, 8, 9, 10, 1, 11, 6, 7, 4, 5)]
 ```
 
-```{r}
-RA_Attack_Map <- RA_V.2 %>% group_by(region) %>% summarise()
+```{r, echo=FALSE}
+RA_Attacker_Map <- RA_V.2 %>% group_by(region) %>% summarise()
 
 mapdata. <- map_data("world")
 
@@ -122,14 +127,13 @@ map1 <- ggplot(mapdata1, aes(x= long, y = lat, group=group)) +
   geom_polygon(aes(fill = region),fill = "firebrick4", color = "black") + 
   borders(alpha = 0.1, fill = "dodgerblue") +
   theme(panel.background = element_rect(color = "black", fill = "gray")) +
-  labs(title = "World Map ", subtitle = "This is a map of where Ransom attacks come from")
+  labs(title = "World Map ", subtitle = "Locations Where Ransome Attacks originate from")
 map1
 
 ```
 ##Q2
 ```{r}
-view(RA_Attack_Map)
-
+view(RA_Attacker_Map) #List of Ransome Countries (WIP)
 ```
 
 
@@ -163,7 +167,25 @@ There does not seem to be any relation between the revenue of a company and the 
 
 # Which regions are being attacked the most.
 ```{r}
+RA_Victums <- RA_V.2 %>% group_by(location, region) %>% summarise()
+view(RA_Victums)
+RA_Victums <- 
 
+
+RA_Victums_Map <- RA_V.2 %>% group_by(location) %>% summarise()
+view(RA_Victum_Map)
+
+mapdata. <- map_data("world")
+
+
+Xmapdata <- left_join(mapdata., RA_Hackers, by="region")
+mapdata1 <- mapdata %>% filter(!is.na(mapdata$Ransomware))
+map1 <- ggplot(mapdata1, aes(x= long, y = lat, group=group)) +
+  geom_polygon(aes(fill = region),fill = "firebrick4", color = "black") + 
+  borders(alpha = 0.1, fill = "dodgerblue") +
+  theme(panel.background = element_rect(color = "black", fill = "gray")) +
+  labs(title = "World Map ", subtitle = "Locations Where Ransome Attacks originate from")
+map1
 
 ```
 
