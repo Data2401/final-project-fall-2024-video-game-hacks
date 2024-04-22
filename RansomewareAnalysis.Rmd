@@ -16,6 +16,7 @@ library(dplyr)
 library(ggplot2)
 #install.packages("patchwork") #run if patchwork not downloaded
 library(patchwork)
+
 RA <- read.csv("Ransomware Attacks - Ransomware Attacks.csv") #Ransomware Attacks
 bitcoinHigh <- read.csv("bitcoinHighPrice.csv") #for bitcoin cost graph
 ```
@@ -77,10 +78,10 @@ glimpse(RA)
 scatterPlot <- RA %>% ggplot(aes(x = revenue..USD.million, y = ransom.cost, color = sector, na.rm = T)) +
   geom_point() +
    labs(
-    x = "Revenue(Millions USD)" ,
+    x = "Revenue(Hundred Millions USD)" ,
     y = "Ransom(Millions USD)"
   ) +
-  scale_x_continuous(labels = scales::number_format(scale = 1e-3, suffix = "M"), limits = c(0,200)) +
+  scale_x_continuous(labels = scales::number_format(scale = 1e-3), limits = c(0,200)) +
   scale_y_continuous(limits = c(0, 100))
 
 
