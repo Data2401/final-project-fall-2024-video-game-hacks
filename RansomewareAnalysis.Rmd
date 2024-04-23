@@ -3,6 +3,9 @@ title: "RansomwareAttacksAnalysis"
 author: "Zack Espinoza, Christian Garza"
 date: "2024-04-16"
 output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -10,55 +13,78 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Load data
+
 ```{r}
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
 library(dslabs)
-library(ggh4x)#Installed
+
 #<<<<<<< HEAD
 #=======
 #install.packages("patchwork") #run if patchwork not downloaded
 library(patchwork)
 #=======
-library(geosphere) #installed
-library(maps) #Installed
+ #Installed
 #>>>>>>> eb922c317e58f6a713f58f0c22e0296e7311011c
 RA <- read.csv("Ransomware Attacks - Ransomware Attacks.csv") #Ransomware Attacks
 bitcoinHigh <- read.csv("bitcoinHighPrice.csv") #for bitcoin cost graph
 ```
 
 # Introduction
-Ransomware refers to a type of malware that locks a user out of their system and can hold their data hostage. The expectation is that the victim will pay a ransom for the attacker to release the data back to the user or withhold it from the public. With the rise of cryptocurrency, these attacks have become far more common than the past due to the unregulated nature of coins so criminals can receive a ransom and hide their tracks. Our goal is to analyze some of these attacks and find out some answers about both the attacks, as well as common victims and outcomes of these attacks.
+
+Ransomware refers to a type of malware that locks a user out of their
+system and can hold their data hostage. The expectation is that the
+victim will pay a ransom for the attacker to release the data back to
+the user or withhold it from the public. With the rise of
+cryptocurrency, these attacks have become far more common than the past
+due to the unregulated nature of coins so criminals can receive a ransom
+and hide their tracks. Our goal is to analyze some of these attacks and
+find out some answers about both the attacks, as well as common victims
+and outcomes of these attacks.
 
 # Explaining the Data
-Due to the nature of these attacks, many of the examples are going to have unknown data such as ransom amount, this is because companies do not like making it public that their security has been breached unless necessary or the attacker has made their intentions public, or worst case scenario, leaked the data to the public or sold it on the black market. This could mean that our data does not apply to the whole situation of ransomware attacks, but we can make conclusions about the data we do know.
+
+Due to the nature of these attacks, many of the examples are going to
+have unknown data such as ransom amount, this is because companies do
+not like making it public that their security has been breached unless
+necessary or the attacker has made their intentions public, or worst
+case scenario, leaked the data to the public or sold it on the black
+market. This could mean that our data does not apply to the whole
+situation of ransomware attacks, but we can make conclusions about the
+data we do know.
 
 # Questions: Christian(1, 2, 4, 5) Zack(3, 6, 7)
-1. What industries are attacked by Ransomware the most?
-2. Where are these attacks coming from
-3. Does a company's revenue or size have any correlation with the ransom amount?
-4. Which regions are being attacked the most.
-5. Which hacker groups are attacking which region most frequently, Europe, America, Asia/Oceania.
-6. Average ransom amount vs average amount actually paid.
-7. Is ransomware that we know about trending down or gaining popularity? Is this changed by the current price of bitcoin?
 
+1.  What industries are attacked by Ransomware the most?
+2.  Where are these attacks coming from
+3.  Does a company's revenue or size have any correlation with the
+    ransom amount?
+4.  Which regions are being attacked the most.
+5.  Which hacker groups are attacking which region most frequently,
+    Europe, America, Asia/Oceania.
+6.  Average ransom amount vs average amount actually paid.
+7.  Is ransomware that we know about trending down or gaining
+    popularity? Is this changed by the current price of bitcoin?
 
 # Unfiltered Data
+
 ```{r}
 glimpse(RA)
 ```
 
 # Explaining the Columns
-- **Target/AKA/description** - Name of the organization attacked
-- **Sector** - What kind of company they are, healthcare, tech, etc
-- **Size** - Number of employees
-- **revenue** - revenue of the company in millions USD
-- **cost/ransom** - cost of the ransom and explaination in millions 
-- **Ransomware** - the individual or group taking credit for the attack
 
+-   **Target/AKA/description** - Name of the organization attacked
+-   **Sector** - What kind of company they are, healthcare, tech, etc
+-   **Size** - Number of employees
+-   **revenue** - revenue of the company in millions USD
+-   **cost/ransom** - cost of the ransom and explaination in millions
+-   **Ransomware** - the individual or group taking credit for the
+    attack
 
 ### Nullifying irrelevant info from dataset
+
 ```{r}
 
 RA$AKA <- NULL
@@ -82,34 +108,34 @@ RA$URL.5 <- NULL
 RA$X.ID <- NULL
 ```
 
-
-
 # 1. What Industries Are Attacked By Ransomware The Most?
 
-
-```{r plot-wider, fig.width=12, fig.height=13} 
+```{r plot-wider, fig.width=12, fig.height=13}
 most_affected <- RA %>% group_by(sector) %>% summarise(n=n()) %>% arrange(desc(n), sector)
 
 ggplot(most_affected, aes(y=fct_rev(sector), x = n)) + geom_col() + scale_x_continuous() + theme(panel.background = element_rect(color = "white", fill = "gray")) + labs(y=NULL, x = "Number of Attacks") + labs(title = "Industries Affected By Ransome Attacks", subtitle = "Ransome Attacks From 2013-2023")
 ```
-(Explain how once we have all the data we can narrow it for what we want)
 
-
+(Explain how once we have all the data we can narrow it for what we
+want)
 
 # Top 5 Industries Attacked By Ransomware The Most
+
 ```{r}
 Top_5_RA <- RA %>% group_by(sector) %>% summarise(n=n()) %>% arrange(desc(n)) %>% head(5)
 
 most_affected <- RA %>% group_by(sector) %>% summarise(n=n()) %>% arrange(desc(n), sector) %>% slice(1:5)
-
-ggplot(most_affected, aes(y=fct_rev(sector), x = n)) + geom_col() + scale_x_continuous() + theme(panel.background = element_rect(color = "white", fill = "gray")) + labs(y=NULL, x = "Number of Attacks") + labs(title = "Top 5 Industries Affected By Ransome Attacks", subtitle = "Ransome Attacks From 2013-2023")
+               ggplot(combinedData, aes(x = factor(YEAR))) +
+  geom_bar(aes(y = ..count..), fill = "black")
+               
+ggplot(most_affected, aes(x=(n), y = sector, fill = "red")) + geom_col() + scale_x_continuous() + theme(panel.background = element_rect(color = "white", fill = "gray")) + labs(y=NULL, x = "Number of Attacks") + labs(title = "Top 5 Industries Affected By Ransome Attacks", subtitle = "Ransome Attacks From 2013-2023")
 ```
+
 (Explain)
 
-
-
 # 2. Where are these attacks coming from
-```{r} 
+
+```{r}
 RA_Hackers <- RA %>% group_by(Ransomware) %>% summarise(n=n())
 
 Temp_RA_ATT <- RA_Hackers$region <- c("N/A", "USA",	"Japan",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Iran",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Cuba",	"Russia",	"Russia",	"UK",	"Ukraine",	"USA",	"Turky",	"Russia",	"Russia",	"Ukraine",	"Ecuador",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"N/A",	"Russia",	"Russia",	"Netherlands",	"Iran",	"Russia",	"Russia",	"Russia",	"Russia",	"Spain",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"USA",	"Iran",	"South Africa",	"Russia",	"Russia",	"Russia",	"Russia",	"North Korea",	"Russia",	"Chinese",	"Russia",	"N/A")
@@ -138,14 +164,6 @@ map1
 RA_Attacker_Map #List of Ransome Countries (WIP) Need to make Key
 ```
 
-
-
-
-
-
-
-
-
 # 3. Does a company's revenue or size have any correlation with the ransom amount?
 
 ```{r}
@@ -165,10 +183,12 @@ scatterPlot
 
 ```
 
-There does not seem to be any relation between the revenue of a company and the requested ransom amount, nor does it have any correlation with what sector the company is in.
-
+There does not seem to be any relation between the revenue of a company
+and the requested ransom amount, nor does it have any correlation with
+what sector the company is in.
 
 # 4. Which regions are being attacked the most.
+
 ```{r}
 RA_Victums <- RA_V.2 %>% group_by(location, sector) %>% summarise(n=n())
 names(RA_Victums)[1] <- "region"
@@ -188,6 +208,7 @@ Xmap1
 
 #Not Sure about this one
 ```
+
 (This where they all are)
 
 ```{r}
@@ -256,10 +277,12 @@ map_data("world") %>%
   theme_bw() +
   labs(title = "World Map ", subtitle = "Ransome Attacks Targets")
 ```
-(This one is good and hows many attacks in each country)
-Its North America.
+
+(This one is good and hows many attacks in each country) Its North
+America.
 
 # 5.A Which hacker groups are attacking which region most frequently, Europe, America, Asia/Oceania.
+
 ```{r}
 RA_Victums <- RA_V.2 %>% group_by(location, sector) %>% summarise(n=n())
 names(RA_Victums)[1] <- "location"
@@ -268,71 +291,10 @@ RA_Big_Victim <- RA_V.2 %>% group_by(location, Ransomware) %>% summarise()
 
 ```
 
-# 5.B
-```{r}
-par(mar=c(0,0,0,0))
-map('world',
-    col="white", fill=TRUE, bg="darkgray", lwd=0.05,
-    mar=rep(0,4),border=0, ylim=c(-80,80) 
-)
-Buenos_aires <- c(-58,-34)
-Paris <- c(2,49)
-Melbourne <- c(145,-38)
-
-data <- rbind(Buenos_aires, Paris, Melbourne) %>% 
-  as.data.frame()
-colnames(data) <- c("long","lat")
-
-map('world',
-    col="#f2f2f2", fill=TRUE, bg="darkgray", lwd=0.05,
-    mar=rep(0,4),border=0, ylim=c(-80,80) 
-)
-points(x=data$long, y=data$lat, col="slateblue", cex=3, pch=20)
-
-map('world',
-    col="white", fill=TRUE, bg="darkgray", lwd=0.05,
-    mar=rep(0,4),border=0, ylim=c(-80,80) 
-)
-
-points(x=data$long, y=data$lat, col="slateblue", cex=3, pch=20)
-
-inter <- gcIntermediate(Paris,  Buenos_aires, n=50, addStartEnd=TRUE, breakAtDateLine=F)
-
-lines(inter, col="slateblue", lwd=2)
- 
-inter <- gcIntermediate(Melbourne,  Paris, n=50, addStartEnd=TRUE, breakAtDateLine=F)             
-lines(inter, col="slateblue", lwd=2)
-
-
-```
-
-# 5.C
-#```{r}
-
-
-WorldMap <- map_data("world")
-
-WorldMap <- left_join(WorldMap,data, by = c("region" = "Country"))
-
-ggplot(WorldData, aes(x = long, y = lat, group = group)) +  
-  geom_polygon(color="black", fill="white") +
-  stat_centroid(data = subset(WorldData, region %in% data$country),
-                aes(size = infection, group = region),
-                geom = "point",
-                alpha = 0.75, color = "red") 
-#``` 
-
-(WIP)
-
-
-
-
-
-
-
 
 
 # Average ransom amount vs average amount actually paid.
+
 ```{r}
 
 avgRansomCost <- RA %>% summarise(requested = mean(ransom.cost, na.rm = T))
@@ -348,11 +310,11 @@ avgRansomUnpaid
 
 ```
 
-The paid average is significantly lower than the overall average and the refused average.
-
-
+The paid average is significantly lower than the overall average and the
+refused average.
 
 # Is ransomware that we know about trending down or gaining popularity? Is this changed by the current price of bitcoin?
+
 ```{r}
 
 yearlyAttacks <- RA %>% filter(YEAR != 2023) %>%  group_by(YEAR) %>% ggplot(aes(x = factor(YEAR))) + 
@@ -390,5 +352,5 @@ combinedPlot
 
 ```
 
-The trend of bitcoin and number of attacks actually does seem to be similar, especially when it dips in 2018 and goes back up in 2020
-
+The trend of bitcoin and number of attacks actually does seem to be
+similar, especially when it dips in 2018 and goes back up in 2020
