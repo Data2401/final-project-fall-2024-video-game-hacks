@@ -1,6 +1,6 @@
 ---
 title: "RansomwareAttacksAnalysis"
-author: "Zack Espinoza"
+author: "Zack Espinoza, Christian Garza"
 date: "2024-04-16"
 output: html_document
 ---
@@ -14,12 +14,15 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
-library(dslabs) #Installed
+library(dslabs)
+library(ggh4x)#Installed
 #<<<<<<< HEAD
 #=======
 #install.packages("patchwork") #run if patchwork not downloaded
 library(patchwork)
-
+#=======
+library(geosphere) #installed
+library(maps) #Installed
 #>>>>>>> eb922c317e58f6a713f58f0c22e0296e7311011c
 RA <- read.csv("Ransomware Attacks - Ransomware Attacks.csv") #Ransomware Attacks
 bitcoinHigh <- read.csv("bitcoinHighPrice.csv") #for bitcoin cost graph
@@ -32,7 +35,7 @@ Ransomware refers to a type of malware that locks a user out of their system and
 Due to the nature of these attacks, many of the examples are going to have unknown data such as ransom amount, this is because companies do not like making it public that their security has been breached unless necessary or the attacker has made their intentions public, or worst case scenario, leaked the data to the public or sold it on the black market. This could mean that our data does not apply to the whole situation of ransomware attacks, but we can make conclusions about the data we do know.
 
 # Questions: Christian(1, 2, 4, 5) Zack(3, 6, 7)
-1. What industries are affected the most?
+1. What industries are attacked by Ransomware the most?
 2. Where are these attacks coming from
 3. Does a company's revenue or size have any correlation with the ransom amount?
 4. Which regions are being attacked the most.
@@ -54,8 +57,10 @@ glimpse(RA)
 - **cost/ransom** - cost of the ransom and explaination in millions 
 - **Ransomware** - the individual or group taking credit for the attack
 
-# What industries are affected the most?
-```{r echo=FALSE}
+
+### Nullifying irrelevant info from dataset
+```{r}
+
 RA$AKA <- NULL
 RA$description <- NULL
 RA$organisation.size.1.5.10.25.100.300. <- NULL
@@ -77,35 +82,35 @@ RA$URL.5 <- NULL
 RA$X.ID <- NULL
 ```
 
-### All industries affected
+
+
+# 1. What Industries Are Attacked By Ransomware The Most?
+
+
 ```{r plot-wider, fig.width=12, fig.height=13} 
 most_affected <- RA %>% group_by(sector) %>% summarise(n=n()) %>% arrange(desc(n), sector)
-#view(most_affected)
+
 ggplot(most_affected, aes(y=fct_rev(sector), x = n)) + geom_col() + scale_x_continuous() + theme(panel.background = element_rect(color = "white", fill = "gray")) + labs(y=NULL, x = "Number of Attacks") + labs(title = "Industries Affected By Ransome Attacks", subtitle = "Ransome Attacks From 2013-2023")
 ```
+(Explain how once we have all the data we can narrow it for what we want)
 
 
 
-### Top 5 industries affected
+# Top 5 Industries Attacked By Ransomware The Most
 ```{r}
 Top_5_RA <- RA %>% group_by(sector) %>% summarise(n=n()) %>% arrange(desc(n)) %>% head(5)
 
 most_affected <- RA %>% group_by(sector) %>% summarise(n=n()) %>% arrange(desc(n), sector) %>% slice(1:5)
-#view(most_affected)
+
 ggplot(most_affected, aes(y=fct_rev(sector), x = n)) + geom_col() + scale_x_continuous() + theme(panel.background = element_rect(color = "white", fill = "gray")) + labs(y=NULL, x = "Number of Attacks") + labs(title = "Top 5 Industries Affected By Ransome Attacks", subtitle = "Ransome Attacks From 2013-2023")
 ```
+(Explain)
 
 
 
-
-
-
-
-
-# Where are these attacks coming from
-```{r, echo=FALSE} 
+# 2. Where are these attacks coming from
+```{r} 
 RA_Hackers <- RA %>% group_by(Ransomware) %>% summarise(n=n())
-
 
 Temp_RA_ATT <- RA_Hackers$region <- c("N/A", "USA",	"Japan",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Iran",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Cuba",	"Russia",	"Russia",	"UK",	"Ukraine",	"USA",	"Turky",	"Russia",	"Russia",	"Ukraine",	"Ecuador",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"N/A",	"Russia",	"Russia",	"Netherlands",	"Iran",	"Russia",	"Russia",	"Russia",	"Russia",	"Spain",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"Russia",	"USA",	"Iran",	"South Africa",	"Russia",	"Russia",	"Russia",	"Russia",	"North Korea",	"Russia",	"Chinese",	"Russia",	"N/A")
 
@@ -113,13 +118,10 @@ RA_loc_of_att <- merge(RA, RA_Hackers, by = c("Ransomware"), all.x = TRUE)
 
 RA_loc_of_att$n <- NULL
 RA_V.2 <- RA_loc_of_att[, c(2, 3, 8, 9, 10, 1, 11, 6, 7, 4, 5)]
-```
-
-```{r, echo=FALSE}
 RA_Attacker_Map <- RA_V.2 %>% group_by(region) %>% summarise()
 
-mapdata. <- map_data("world")
 
+mapdata. <- map_data("world")
 
 mapdata <- left_join(mapdata., RA_Hackers, by="region")
 mapdata1 <- mapdata %>% filter(!is.na(mapdata$Ransomware))
@@ -128,12 +130,12 @@ map1 <- ggplot(mapdata1, aes(x= long, y = lat, group=group)) +
   borders(alpha = 0.1, fill = "dodgerblue") +
   theme(panel.background = element_rect(color = "black", fill = "gray")) +
   labs(title = "World Map ", subtitle = "Locations Where Ransome Attacks originate from")
+
 map1
-
 ```
-##Q2
+
 ```{r}
-view(RA_Attacker_Map) #List of Ransome Countries (WIP)
+RA_Attacker_Map #List of Ransome Countries (WIP) Need to make Key
 ```
 
 
@@ -144,7 +146,7 @@ view(RA_Attacker_Map) #List of Ransome Countries (WIP)
 
 
 
-# Does a company's revenue or size have any correlation with the ransom amount?
+# 3. Does a company's revenue or size have any correlation with the ransom amount?
 
 ```{r}
 
@@ -165,44 +167,162 @@ scatterPlot
 
 There does not seem to be any relation between the revenue of a company and the requested ransom amount, nor does it have any correlation with what sector the company is in.
 
-# Which regions are being attacked the most.
+
+# 4. Which regions are being attacked the most.
 ```{r}
-RA_Victums <- RA_V.2 %>% group_by(location, region) %>% summarise()
-view(RA_Victums)
-RA_Victums <- 
+RA_Victums <- RA_V.2 %>% group_by(location, sector) %>% summarise(n=n())
+names(RA_Victums)[1] <- "region"
 
 
-RA_Victums_Map <- RA_V.2 %>% group_by(location) %>% summarise()
-view(RA_Victum_Map)
-
-mapdata. <- map_data("world")
+Xmapdata. <- map_data("world")
 
 
-Xmapdata <- left_join(mapdata., RA_Hackers, by="region")
-mapdata1 <- mapdata %>% filter(!is.na(mapdata$Ransomware))
-map1 <- ggplot(mapdata1, aes(x= long, y = lat, group=group)) +
-  geom_polygon(aes(fill = region),fill = "firebrick4", color = "black") + 
+Xmapdata <- left_join(Xmapdata., RA_Victums, by="region")
+Xmapdata1 <- Xmapdata %>% filter(!is.na(Xmapdata$sector))
+Xmap1 <- ggplot(Xmapdata1, aes(x= long, y = lat, group=group)) +
+  geom_polygon(aes(fill = region),fill = "darkgreen", color = "black") + 
   borders(alpha = 0.1, fill = "dodgerblue") +
   theme(panel.background = element_rect(color = "black", fill = "gray")) +
-  labs(title = "World Map ", subtitle = "Locations Where Ransome Attacks originate from")
-map1
+  labs(title = "World Map ", subtitle = "Ransome Attacks Targets")
+Xmap1
 
+#Not Sure about this one
 ```
+(This where they all are)
 
-
-
-
-
-
-
-
-
-# Which hacker groups are attacking which region most frequently, Europe, America, Asia/Oceania.
 ```{r}
+df <- tribble(
+  ~Country, ~Value,
+  "Argentina",	2,
+"Australia",	14,
+"Austria",	1,
+"Belgium",	2,
+"Brazil",	7,
+"Canada",	15,
+"Chile",	2,
+"China",	5,
+"Croatia",	1,
+"Denmark",	2,
+"Ecuador",	2,
+"Europe",	1,
+"Finland",	2,
+"France",	14,
+"Germany",	13,
+"Greece",	1,
+"Hong Kong,",	1,
+"Hungary",	1,
+"India",	8,
+"Indonesia",	1,
+"Ireland",	4,
+"Israel",	3,
+"Italy",	2,
+"Japan",	9,
+"Malaysia",	2,
+"Mexico",	2,
+"New Zealand",	1,
+"Norway",	4,
+"Pakistan",	1,
+"Phillipines",	1,
+"Poland",	1,
+"Portugal",	2,
+"Russia",	7,
+"Scotland",	3,
+"Seychelles",	1,
+"Singapore",	1,
+"Slovakia",	1,
+"South Korea",	4,
+"Spain",	6,
+"Sweden",	1,
+"Switzerland",	2,
+"Taiwan",	4,
+"Thailand,",	1,
+"The Netherlands",	5,
+"UK",	29,
+"Ukraine",	2,
+"USA",	165,
+"Worldwide",	5
+
+)
+map_data("world") %>% 
+ 
+  left_join(df, by = join_by(region == Country)) %>% 
+  ggplot(aes(long, lat)) +
+  geom_polygon(aes(group = group, fill = Value), color ="black") +
+  scale_fill_gradient(low = "skyblue", 
+                      high = "darkblue", 
+                      limits = c(1,165), 
+                      na.value = "gray90") + 
+  coord_sf() +
+  theme_bw() +
+  labs(title = "World Map ", subtitle = "Ransome Attacks Targets")
+```
+(This one is good and hows many attacks in each country)
+Its North America.
+
+# 5.A Which hacker groups are attacking which region most frequently, Europe, America, Asia/Oceania.
+```{r}
+RA_Victums <- RA_V.2 %>% group_by(location, sector) %>% summarise(n=n())
+names(RA_Victums)[1] <- "location"
+
+RA_Big_Victim <- RA_V.2 %>% group_by(location, Ransomware) %>% summarise()
+
+```
+
+# 5.B
+```{r}
+par(mar=c(0,0,0,0))
+map('world',
+    col="white", fill=TRUE, bg="darkgray", lwd=0.05,
+    mar=rep(0,4),border=0, ylim=c(-80,80) 
+)
+Buenos_aires <- c(-58,-34)
+Paris <- c(2,49)
+Melbourne <- c(145,-38)
+
+data <- rbind(Buenos_aires, Paris, Melbourne) %>% 
+  as.data.frame()
+colnames(data) <- c("long","lat")
+
+map('world',
+    col="#f2f2f2", fill=TRUE, bg="darkgray", lwd=0.05,
+    mar=rep(0,4),border=0, ylim=c(-80,80) 
+)
+points(x=data$long, y=data$lat, col="slateblue", cex=3, pch=20)
+
+map('world',
+    col="white", fill=TRUE, bg="darkgray", lwd=0.05,
+    mar=rep(0,4),border=0, ylim=c(-80,80) 
+)
+
+points(x=data$long, y=data$lat, col="slateblue", cex=3, pch=20)
+
+inter <- gcIntermediate(Paris,  Buenos_aires, n=50, addStartEnd=TRUE, breakAtDateLine=F)
+
+lines(inter, col="slateblue", lwd=2)
+ 
+inter <- gcIntermediate(Melbourne,  Paris, n=50, addStartEnd=TRUE, breakAtDateLine=F)             
+lines(inter, col="slateblue", lwd=2)
 
 
 ```
 
+# 5.C
+#```{r}
+
+
+WorldMap <- map_data("world")
+
+WorldMap <- left_join(WorldMap,data, by = c("region" = "Country"))
+
+ggplot(WorldData, aes(x = long, y = lat, group = group)) +  
+  geom_polygon(color="black", fill="white") +
+  stat_centroid(data = subset(WorldData, region %in% data$country),
+                aes(size = infection, group = region),
+                geom = "point",
+                alpha = 0.75, color = "red") 
+#``` 
+
+(WIP)
 
 
 
